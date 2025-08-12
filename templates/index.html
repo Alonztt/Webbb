@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Фотохостинг - Загружайте и делитесь изображениями</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">
+                <i class="fas fa-images"></i>
+                Фотохостинг
+            </h1>
+            <p class="tagline">Загружайте, храните и делитесь вашими изображениями</p>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <!-- Форма загрузки -->
+            <section class="upload-section">
+                <div class="upload-card">
+                    <h2><i class="fas fa-cloud-upload-alt"></i> Загрузить изображение</h2>
+                    
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ 'error' if category == 'error' else 'success' }}">
+                                    <i class="fas fa-{{ 'exclamation-triangle' if category == 'error' else 'check-circle' }}"></i>
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    <form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data" class="upload-form">
+                        <div class="file-input-wrapper">
+                            <input type="file" name="file" id="file" accept="image/*" required>
+                            <label for="file" class="file-label">
+                                <i class="fas fa-upload"></i>
+                                <span class="file-text">Выберите файл</span>
+                                <span class="file-info">PNG, JPG, GIF, BMP, WebP до 16MB</span>
+                            </label>
+                        </div>
+                        <button type="submit" class="upload-btn">
+                            <i class="fas fa-upload"></i>
+                            Загрузить
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Галерея изображений -->
+            <section class="gallery-section">
+                <h2><i class="fas fa-th"></i> Галерея изображений</h2>
+                
+                {% if images %}
+                    <div class="gallery">
+                        {% for image in images %}
+                            <div class="image-card" data-filename="{{ image.filename }}">
+                                <div class="image-wrapper">
+                                    {% if image.filename.startswith('thumb_') %}
+                                        <img src="{{ url_for('uploaded_file', filename=image.filename) }}" 
+                                             alt="Миниатюра" class="image-thumb">
+                                    {% else %}
+                                        <img src="{{ url_for('uploaded_file', filename=image.filename) }}" 
+                                             alt="Изображение" class="image-thumb">
+                                    {% endif %}
+                                </div>
+                                <div class="image-info">
+                                    <div class="image-details">
+                                        <span class="image-size">{{ image.width }}×{{ image.height }}</span>
+                                        <span class="image-format">{{ image.format.upper() }}</span>
+                                        <span class="image-filesize">{{ "%.1f"|format(image.size / 1024) }} KB</span>
+                                    </div>
+                                    <div class="image-actions">
+                                        <a href="{{ url_for('uploaded_file', filename=image.filename) }}" 
+                                           target="_blank" class="btn btn-view" title="Просмотр">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="{{ url_for('uploaded_file', filename=image.filename) }}" 
+                                           download class="btn btn-download" title="Скачать">
+                                            <i class="fas fa-download"></i>
+                                        </a>
+                                        <button class="btn btn-delete" title="Удалить" 
+                                                onclick="deleteImage('{{ image.filename }}')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                    <div class="upload-time">
+                                        <i class="fas fa-clock"></i>
+                                        {{ image.upload_time }}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-gallery">
+                        <i class="fas fa-images"></i>
+                        <p>Пока нет загруженных изображений</p>
+                        <p>Загрузите первое изображение выше!</p>
+                    </div>
+                {% endif %}
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Фотохостинг. Создано с ❤️</p>
+        </div>
+    </footer>
+
+    <!-- Модальное окно подтверждения удаления -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <h3><i class="fas fa-exclamation-triangle"></i> Подтверждение удаления</h3>
+            <p>Вы уверены, что хотите удалить это изображение? Это действие нельзя отменить.</p>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeDeleteModal()">Отмена</button>
+                <button class="btn btn-danger" onclick="confirmDelete()">Удалить</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
