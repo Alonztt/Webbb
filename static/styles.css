@@ -1,0 +1,65 @@
+* { box-sizing: border-box; }
+:root {
+  --bg: #0f1216;
+  --card: #151a21;
+  --text: #e9eef5;
+  --muted: #a9b4c0;
+  --accent: #6aa6ff;
+  --border: #242b36;
+}
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", "Apple Color Emoji", "Segoe UI Emoji";
+}
+.container { max-width: 1100px; margin: 0 auto; padding: 16px; }
+header h1 { margin: 0 0 4px; font-size: 28px; }
+header .muted { color: var(--muted); margin: 0; }
+
+.uploader {
+  border: 2px dashed var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  background: var(--card);
+  margin: 16px 0 24px;
+  text-align: center;
+}
+.uploader.dragover { border-color: var(--accent); background: #121823; }
+.uploader input[type=file] { display: inline-block; margin-right: 12px; }
+.uploader button {
+  background: var(--accent);
+  color: #08111f;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.uploader .hint { color: var(--muted); margin-top: 8px; }
+.status { margin-top: 10px; color: var(--muted); min-height: 20px; }
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+}
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.card img { width: 100%; display: block; }
+.card .meta { padding: 8px 10px; display: flex; align-items: center; justify-content: space-between; }
+.card .meta .links { display: flex; gap: 8px; align-items: center; }
+.link {
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 12px;
+  border: 1px solid var(--border);
+  padding: 4px 6px; border-radius: 6px;
+}
+.delete { color: #ff7070; cursor: pointer; font-size: 12px; }
+.footer { color: var(--muted); display: flex; justify-content: space-between; align-items: center; padding-top: 8px; border-top: 1px solid var(--border); margin-top: 24px; }
